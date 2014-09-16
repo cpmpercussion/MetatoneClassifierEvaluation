@@ -47,3 +47,8 @@ allscores = pd.melt(scores)
 accuracy = 1. * allscores['value'].sum() / allscores['value'].count()
 print("Accuracy over whole classified performance: " + str(accuracy))
 
+# Some plots:
+pd.melt(predictions).hist(range=(-0.5,9.5),bins=10)
+
+
+
