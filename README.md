@@ -9,10 +9,19 @@
 
 Results are as follows:
 
-    Loading Gesture files and calculating accuracy.
+    Regular Gesture Accuracy:
+
     Accuracy for performer charles was: 0.448275862069
     Accuracy for performer christina was: 0.578544061303
     Accuracy for performer yvonne was: 0.466475095785
     Accuracy for performer jonathan was: 0.521072796935
     Accuracy over whole classified performance: 0.503591954023
+
+    Gesture Group Accuracy: 
+
+    Accuracy for performer charles was: 0.726053639847
+    Accuracy for performer christina was: 0.735632183908
+    Accuracy for performer yvonne was: 0.661877394636
+    Accuracy for performer jonathan was: 0.719348659004
+    Accuracy over whole classified performance: 0.710727969349
 
