@@ -12,16 +12,15 @@ Results are as follows:
     Regular Gesture Accuracy:
 
     Accuracy for performer charles was: 0.448275862069
-    Accuracy for performer christina was: 0.578544061303
-    Accuracy for performer yvonne was: 0.466475095785
-    Accuracy for performer jonathan was: 0.521072796935
-    Accuracy over whole classified performance: 0.503591954023
+    Accuracy for performer christina was: 0.658045977011
+    Accuracy for performer yvonne was: 0.522030651341
+    Accuracy for performer jonathan was: 0.449233716475
+    Accuracy over whole classified performance: 0.519396551724
 
     Gesture Group Accuracy: 
 
-    Accuracy for performer charles was: 0.726053639847
-    Accuracy for performer christina was: 0.735632183908
-    Accuracy for performer yvonne was: 0.661877394636
-    Accuracy for performer jonathan was: 0.719348659004
-    Accuracy over whole classified performance: 0.710727969349
-
+    Accuracy for performer charles was: 0.723180076628
+    Accuracy for performer christina was: 0.807471264368
+    Accuracy for performer yvonne was: 0.727011494253
+    Accuracy for performer jonathan was: 0.620689655172
+    Accuracy over whole classified performance: 0.719588122605

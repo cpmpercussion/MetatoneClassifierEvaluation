@@ -42,7 +42,9 @@ gesture_groups = {
 predictions = pd.read_csv(PREDICTED_GESTURES,index_col="time",parse_dates=True)
 
 targets = pd.read_csv(TARGET_GESTURES,index_col="time",parse_dates=True)
-targets = targets.resample('1s',fill_method='ffill')
+# targets = targets.resample('1s',fill_method='ffill')
+targets = targets.resample('1s',fill_method='bfill')
+
 targets = targets.ix[predictions.index]
 
 names = targets.columns
