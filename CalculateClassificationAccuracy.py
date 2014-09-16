@@ -6,6 +6,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+print("Loading Gesture files and calculating accuracy.")
+
 TARGET_GESTURES = "./data/20130427/20130427-17h46m19s-MicaiahCoded.csv"
 PREDICTED_GESTURES = "./data/20130427/2013-04-27T17-46-19-MetatonePostHoc-gestures.csv"
 
