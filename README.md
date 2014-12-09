@@ -24,3 +24,6 @@ Results are as follows:
     Accuracy for performer yvonne was: 0.727011494253
     Accuracy for performer jonathan was: 0.620689655172
     Accuracy over whole classified performance: 0.719588122605
+
+- the accuracy is lower than would be necessary to issue commands (cite Wobbrock)
+- accuracy is significantly higher than chance (1/9 = 11%)
