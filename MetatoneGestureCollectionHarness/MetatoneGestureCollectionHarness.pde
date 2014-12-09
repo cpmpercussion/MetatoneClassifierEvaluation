@@ -45,15 +45,12 @@ public void updateInterface() {
   currentTimeLeft = currentPhaseTime - (millis() - lastPhaseStartTime)/1000;
   if (currentTimeLeft < 1) {
     // start new phase
-    currentSurveyIndex++;
-    
-    if (currentSurveyIndex > gestureSurveyOrder.length - 1) {
-      endPhase();
-      return;  
-    }
-    
-    
     if (currentlySurveying) {
+      currentSurveyIndex++;
+      if (currentSurveyIndex > gestureSurveyOrder.length - 1) {
+        endPhase();
+        return;  
+      }
       startRest(currentSurveyIndex);
     } else {
       startSurvey(currentSurveyIndex);
