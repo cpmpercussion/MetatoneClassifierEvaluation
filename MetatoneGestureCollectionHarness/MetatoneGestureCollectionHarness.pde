@@ -1,6 +1,13 @@
 import java.util.Random; //<>//
 import java.util.Arrays;
+import ddf.minim.*;
+import ddf.minim.ugens.*;
 
+Minim minim;
+AudioOutput out;
+Oscil wave;
+Damp envelope;
+AudioPlayer applausePlayer;
 
 String REST_TEXT = "Rest";
 int CURRENT_TIME_LEFT = 0;
@@ -21,17 +28,23 @@ int lastPhaseStartTime = 0;
 boolean currentlySurveying;
 int currentPhaseTime = 0;
 int currentTimeLeft = 0;
+int lastCurrentTimeLeft = 0;
 
-
-// Procedure:
-// 0. Choose First Gesture
-// 1. Rest
-// 2. Apply Gesture
-// 4. Gesture
-// 5. Goto 1.
 
 void setup() {
   size(1200, 800);
+  minim = new Minim(this);
+  out = minim.getLineOut();
+  
+  wave = new Oscil(440, 0.5f, Waves.SINE);
+  envelope = new Damp(0.03, 0.6);
+  wave.patch(envelope);
+  envelope.patch(out);
+  applausePlayer = minim.loadFile("applause.mp3");
+
+  applausePlayer.play();
+
+  
   println("Loading Gesture Survey");
   gestureSurveyOrder = GESTURE_NUMBERS.clone();
   shuffleArray(gestureSurveyOrder);
@@ -41,8 +54,9 @@ void setup() {
   startRest(currentSurveyIndex);
 }
 
-public void updateInterface() {
+void updateInterface() {
   currentTimeLeft = currentPhaseTime - (millis() - lastPhaseStartTime)/1000;
+
   if (currentTimeLeft < 1) {
     // start new phase
     if (currentlySurveying) {
@@ -52,22 +66,36 @@ public void updateInterface() {
         return;  
       }
       startRest(currentSurveyIndex);
+      return;
     } else {
       startSurvey(currentSurveyIndex);
+      return;
     }
   }
+  
+  if ((currentTimeLeft != lastCurrentTimeLeft) && (currentTimeLeft < 6)) {
+    playCountdownSound();
+  }
+  lastCurrentTimeLeft = currentTimeLeft;
 }
 
-public void endPhase() {
+
+
+void endPhase() {
   CURRENT_GESTURE = "Finished!";
   NEXT_GESTURE = "--";
   currentPhaseTime = 1000;
   currentTimeLeft = currentPhaseTime;
   currentlySurveying = false;
   lastPhaseStartTime = millis();
+  
+  // Play applause sound!
+  applausePlayer.rewind();
+  applausePlayer.play();
 }
 
-public void startRest(int index) {
+void startRest(int index) {
+  playStartSound();
   CURRENT_GESTURE = REST_TEXT;
   NEXT_GESTURE = GESTURE_NAMES[gestureSurveyOrder[index]];
   currentPhaseTime = REST_INTERVAL;
@@ -76,13 +104,24 @@ public void startRest(int index) {
   lastPhaseStartTime = millis();
 }
 
-public void startSurvey(int index) {
+void startSurvey(int index) {
+  playStartSound();
   CURRENT_GESTURE = GESTURE_NAMES[gestureSurveyOrder[index]];
   NEXT_GESTURE = REST_TEXT;
   currentPhaseTime = GESTURE_INTERVAL;
   currentTimeLeft = currentPhaseTime;
   currentlySurveying = true; 
   lastPhaseStartTime = millis();
+}
+
+void playCountdownSound() {
+  wave.setFrequency(440);
+  envelope.activate();
+}
+
+void playStartSound() {
+  wave.setFrequency(880);
+  envelope.activate();
 }
 
 
