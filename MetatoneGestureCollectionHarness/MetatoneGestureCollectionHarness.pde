@@ -2,6 +2,8 @@ import java.util.Random; //<>//
 import java.util.Arrays;
 import ddf.minim.*;
 import ddf.minim.ugens.*;
+import oscP5.*;
+import netP5.*;
 
 Minim minim;
 AudioOutput out;
@@ -9,14 +11,22 @@ Oscil wave;
 Damp envelope;
 AudioPlayer applausePlayer;
 
+OscP5 oscServer;
+NetAddress classifierAddress;
+
+String CLASSIFIER_HOST = "10.0.1.2";
+int CLASSIFIER_PORT = 9000;
+String TARGET_GESTURE_OSC_ADDRESS = "/metatone/targetgesture";
+
 String REST_TEXT = "Rest";
 int CURRENT_TIME_LEFT = 0;
 String CURRENT_GESTURE = "Accel. Swipes";
 String NEXT_GESTURE = "Rest";
   // , Accel. Swipes, , , , , , . 
 
-int GESTURE_INTERVAL = 60;
-int REST_INTERVAL = 20;
+int GESTURE_INTERVAL = 10;
+int REST_INTERVAL = 10;
+int GESTURE_MESSAGE_INTERVAL = 200; // 200 milliseconds
 
 String[] GESTURE_NAMES = {"Nothing","Fast Taps","Slow Taps","Fast Swipes","Accel. Swipes","V. Slow Swirl","Big Swirl","Small Swirl","Combination"};
 String[] GESTURE_CODES = {"N","FT","ST","FS","FSA","VSS","BS","SS","C"};
@@ -29,10 +39,17 @@ boolean currentlySurveying;
 int currentPhaseTime = 0;
 int currentTimeLeft = 0;
 int lastCurrentTimeLeft = 0;
+int lastGestureMessageSend = 0;
 
 
 void setup() {
   size(1200, 800);
+  oscServer = new OscP5(this,61200);
+//  oscServer.plug(this,"touchHandler","/metatone/touch");
+  CLASSIFIER_HOST = oscServer.ip();
+  println("Setting Classifier Address to: " + CLASSIFIER_HOST);
+  classifierAddress = new NetAddress(CLASSIFIER_HOST,CLASSIFIER_PORT);
+  
   minim = new Minim(this);
   out = minim.getLineOut();
   
@@ -42,9 +59,6 @@ void setup() {
   envelope.patch(out);
   applausePlayer = minim.loadFile("applause.mp3");
 
-  applausePlayer.play();
-
-  
   println("Loading Gesture Survey");
   gestureSurveyOrder = GESTURE_NUMBERS.clone();
   shuffleArray(gestureSurveyOrder);
@@ -52,10 +66,16 @@ void setup() {
   println(gestureSurveyOrder);
   currentSurveyIndex = 0; 
   startRest(currentSurveyIndex);
+  applausePlayer.play();
 }
 
 void updateInterface() {
   currentTimeLeft = currentPhaseTime - (millis() - lastPhaseStartTime)/1000;
+
+  if (millis() - lastGestureMessageSend > GESTURE_MESSAGE_INTERVAL) {
+//   println(millis() - lastGestureMessageSend);
+   sendGestureToLog(); 
+  }
 
   if (currentTimeLeft < 1) {
     // start new phase
@@ -79,7 +99,16 @@ void updateInterface() {
   lastCurrentTimeLeft = currentTimeLeft;
 }
 
-
+void sendGestureToLog() {
+  OscMessage gestureMessage = new OscMessage(TARGET_GESTURE_OSC_ADDRESS);
+  if (currentlySurveying) {
+    gestureMessage.add(gestureSurveyOrder[currentSurveyIndex]);
+  } else {
+    gestureMessage.add(100);
+  }
+  oscServer.send(gestureMessage,classifierAddress);
+  lastGestureMessageSend = millis();
+}
 
 void endPhase() {
   CURRENT_GESTURE = "Finished!";
@@ -174,5 +203,13 @@ void shuffleArray(int[] array) {
     int tmp = array[j];
     array[j] = array[i-1];
     array[i-1] = tmp;
+  }
+}
+
+void oscEvent(OscMessage message) {
+  if(message.isPlugged()==false) {
+    println("### received an osc message.");
+    println("### addrpattern\t"+message.addrPattern());
+    println("### typetag\t"+message.typetag());
   }
 }
