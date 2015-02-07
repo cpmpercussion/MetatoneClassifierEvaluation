@@ -24,8 +24,8 @@ String CURRENT_GESTURE = "Accel. Swipes";
 String NEXT_GESTURE = "Rest";
   // , Accel. Swipes, , , , , , . 
 
-int GESTURE_INTERVAL = 10;
-int REST_INTERVAL = 10;
+int GESTURE_INTERVAL = 60;
+int REST_INTERVAL = 20;
 int GESTURE_MESSAGE_INTERVAL = 200; // 200 milliseconds
 
 String[] GESTURE_NAMES = {"Nothing","Fast Taps","Slow Taps","Fast Swipes","Accel. Swipes","V. Slow Swirl","Big Swirl","Small Swirl","Combination"};
@@ -208,8 +208,8 @@ void shuffleArray(int[] array) {
 
 void oscEvent(OscMessage message) {
   if(message.isPlugged()==false) {
-    println("### received an osc message.");
-    println("### addrpattern\t"+message.addrPattern());
-    println("### typetag\t"+message.typetag());
+//    println("### received an osc message.");
+//    println("### addrpattern\t"+message.addrPattern());
+//    println("### typetag\t"+message.typetag());
   }
 }
